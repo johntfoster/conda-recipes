@@ -1,0 +1,6 @@
+package: cloog
+script:
+    - conda config --add channels http://conda.anaconda.org/johntfoster
+    - conda build .
+build_targets: conda
+engine: python=2

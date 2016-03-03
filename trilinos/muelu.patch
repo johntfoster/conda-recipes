@@ -1,0 +1,21 @@
+--- packages/muelu/adapters/CMakeLists.txt	2015-11-12 18:40:13.000000000 -0600
++++ p1.txt	2015-11-17 13:19:38.000000000 -0600
+@@ -125,7 +125,7 @@
+   muelu-adapters
+   HEADERS ${HEADERS}
+   SOURCES ${SOURCES}
+-#  DEPLIBS muelu muelu-interface
++  DEPLIBS muelu muelu-interface
+   ADDED_LIB_TARGET_NAME_OUT MUELU_ADAPTERS_LIBNAME
+   )
+ 
+--- packages/muelu/src/Interface/CMakeLists.txt	2015-11-17 13:29:08.000000000 -0600
++++ p2.txt	2015-11-17 13:29:03.000000000 -0600
+@@ -86,6 +86,7 @@
+   muelu-interface
+   HEADERS ${HEADERS}
+   SOURCES ${SOURCES}
++  DEPLIBS muelu
+   )
+ 
+ # for debugging

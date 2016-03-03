@@ -1,25 +1,28 @@
 package:
   name: trilinos
-  version: 11.2.4
+  version: 12.2.2
+build:
+  number: 0
+  string: pytrilinos
 
 source:
-  fn: trilinos-11.2.4-Source.tar.gz
-  url: http://trilinos.sandia.gov/download/files/trilinos-11.2.4-Source.tar.gz
-  md5: 29abd4c5bd4bb39aef87e151bfe12541
+  fn: trilinos-12.2.2-Source.tar.bz2
+  url: http://trilinos.csbsju.edu/download/files/trilinos-12.2.2-Source.tar.bz2
+  md5: 90bbb175505b55878401a51a1d17463c
   patches:
-    - version.patch
+      - svdi.patch
+      - muelu.patch
 
 requirements:
   build:
-    - python
-    - numpy
+    - numpy 1.10.1 py27_0
     - swig
+    - doxygen HEAD py27
     - cmake
+    - libnetcdf HEAD py27
+    - boost
   run:
-    - python
-    - numpy
+    - numpy 1.10.1 py27_0
+    - libnetcdf HEAD py27
+    - boost
 
-test:
-  imports:
-    - PyTrilinos
-    - PyTrilinos._Teuchos

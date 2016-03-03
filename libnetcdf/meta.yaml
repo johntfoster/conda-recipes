@@ -1,21 +1,22 @@
 package:
   name: libnetcdf
-  version: 4.2.1.1
+  version: 'HEAD'
+build:
+  number: 0
+  string: py27
 
 source:
-  fn: netcdf-4.2.1.1.tar.gz
-  url: http://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-4.2.1.1.tar.gz
-  md5: 5eebcf19e6ac78a61c73464713cbfafc
+  git_url: https://github.com/johntfoster/netcdf-c
 
 requirements:
   build:
     - curl
-    - hdf5
-    - zlib
+    - zlib 1.2.8 py27
+    - hdf5 1.8.16 py27
   run:
     - curl
-    - hdf5
-    - zlib
+    - zlib 1.2.8 py27
+    - hdf5 1.8.16 py27
 
 test:
   commands:

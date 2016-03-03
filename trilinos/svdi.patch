@@ -1,0 +1,10 @@
+--- packages/seacas/libraries/svdi/CMakeLists.txt	2015-07-14 15:26:01.000000000 -0500
++++ CMakeLists2.txt	2015-11-09 21:52:18.000000000 -0600
+@@ -43,6 +43,7 @@
+ 
+ TRIBITS_ADD_LIBRARY(
+ 	svdi_cgi
++    DEPLIBS svdi_cdr
+ 	SOURCES ${CGI_SOURCES}
+ )
+ 

@@ -1,20 +1,19 @@
 package:
   name: isl
-  version: "0.15"
+  version: 0.15
 
 source:
   fn: isl-0.15.tar.bz2
-  url: ftp://gcc.gnu.org/pub/gcc/infrastructure/isl-0.15.tar.bz2
-  md5: 8428efbbc6f6e2810ce5c1ba73ecf98c
+  url: http://isl.gforge.inria.fr/isl-0.15.tar.bz2
 
 build:
   number: 0
 
 requirements:
   build:
-    - gmp
+    - gmp 6.1.0
   run:
-    - gmp
+    - gmp 6.1.0
 
 about:
   license: MIT

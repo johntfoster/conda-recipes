@@ -1,0 +1,205 @@
+--- packages/PyTrilinos/doc/Doxygen/docstrings.py	(original)
++++ packages/PyTrilinos/doc/Doxygen/docstrings.py	(refactored)
+@@ -26,7 +26,7 @@
+     err_file = open(err_name, 'w')
+ 
+     # Print message
+-    print "Running doxygen on package", package, "...",
++    print("Running doxygen on package", package, "...", end=' ')
+     sys.stdout.flush()
+ 
+     # Run and wait for completion
+@@ -36,11 +36,11 @@
+ 
+     # Complete the message
+     if result != 0:
+-        print "ERRORS!"
+-        print open(err_name).read()
++        print("ERRORS!")
++        print(open(err_name).read())
+         sys.exit(result)
+     else:
+-        print "success"
++        print("success")
+ 
+     ######################################################################
+     # Run doxy2swig.py on the appropriate index.xml file
+@@ -57,8 +57,8 @@
+     err_file = open(err_name, 'w')
+ 
+     # Print message
+-    print "Converting doxygen XML to SWIG docstring directives for", \
+-          package, "...",
++    print("Converting doxygen XML to SWIG docstring directives for", \
++          package, "...", end=' ')
+     sys.stdout.flush()
+ 
+     # Run and wait for completion
+@@ -68,11 +68,11 @@
+ 
+     # Complete the message
+     if result != 0:
+-        print "ERRORS!"
+-        print open(err_name).read()
++        print("ERRORS!")
++        print(open(err_name).read())
+         sys.exit(result)
+     else:
+-        print "success"
++        print("success")
+ 
+     ######################################################################
+     # Cleanup
+--- packages/PyTrilinos/doc/Doxygen/doxy2swig.py	(original)
++++ packages/PyTrilinos/doc/Doxygen/doxy2swig.py	(refactored)
+@@ -53,7 +53,7 @@
+ def my_str(source):
+     try:
+         result = str(source)
+-    except UnicodeEncodeError, e:
++    except UnicodeEncodeError as e:
+         result = unicodedata.normalize('NFKD',source).encode('ascii','ignore')
+     return result
+ 
+@@ -172,7 +172,7 @@
+         """
+         Adds text corresponding to `value` into `self.pieces`.
+         """
+-        if type(value) in (types.ListType, types.TupleType):
++        if type(value) in (list, tuple):
+             self.pieces.extend(value)
+         else:
+             self.pieces.append(value)
+@@ -232,17 +232,17 @@
+         kind = node.attributes['kind'].value
+         if kind in ('class', 'struct'):
+             prot = node.attributes['prot'].value
+-            if prot <> 'public':
++            if prot != 'public':
+                 return
+             names = ('compoundname', 'briefdescription',
+                      'detaileddescription', 'includes')
+             first = self.get_specific_nodes(node, names)
+             for n in names:
+-                if first.has_key(n):
++                if n in first:
+                     self.parse(first[n])
+             self.add_text(['";','\n'])
+             for n in node.childNodes:
+-                if n not in first.values():
++                if n not in list(first.values()):
+                     self.parse(n)
+         elif kind in ('file', 'namespace'):
+             nodes = node.getElementsByTagName('sectiondef')
+@@ -288,7 +288,7 @@
+             if name[:8] == 'operator': # Don't handle operators yet.
+                 return
+ 
+-            if not first.has_key('definition') or \
++            if 'definition' not in first or \
+                    kind in ['variable', 'typedef']:
+                 return
+ 
+@@ -316,7 +316,7 @@
+                 self.add_text(' %s::%s "\n%s'%(cname, name, defn))
+ 
+             for n in node.childNodes:
+-                if n not in first.values():
++                if n not in list(first.values()):
+                     self.parse(n)
+             self.add_text(['";', '\n'])
+ 
+@@ -381,7 +381,7 @@
+             fname = refid + '.xml'
+             if not os.path.exists(fname):
+                 fname = os.path.join(self.my_dir,  fname)
+-            print "parsing file: %s"%fname
++            print("parsing file: %s"%fname)
+             p = Doxy2SWIG(fname)
+             p.generate()
+             self.pieces.extend(self.clean_pieces(p.pieces))
+@@ -403,7 +403,7 @@
+         ret = []
+         count = 0
+         for i in pieces:
+-            if isinstance(i, unicode):
++            if isinstance(i, str):
+                 i = my_str(i)
+             if i == '\n':
+                 count = count + 1
+--- cmake/tribits/core/modules/FindPythonInterp.cmake	2015-11-12 18:35:23.000000000 -0600
++++ p1.cmake	2015-11-17 21:04:12.000000000 -0600
+@@ -60,8 +60,14 @@
+ #MESSAGE("Calling TriBITS version of FindPythonInterp.cmake")
+ 
+ FIND_PROGRAM(PYTHON_EXECUTABLE
+-  NAMES python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 python1.6 python1.5 python
++  NAMES python3 python3.0 python3.1 python3.2 python3.3 python3.4 python3.5 python2.7 python2.6 python2.5 python2.4 python2.3 python2.2 python2.1 python2.0 python1.6 python1.5 python
+   PATHS
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.5\\InstallPath]
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.4\\InstallPath]
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.3\\InstallPath]
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.2\\InstallPath]
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.1\\InstallPath]
++  [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\3.0\\InstallPath]
+   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]
+   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]
+   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]
+@@ -94,7 +100,7 @@
+   ENDIF()
+   IF (PythonInterp_FIND_VERSION)
+     EXECUTE_PROCESS(COMMAND
+-      ${PYTHON_EXECUTABLE} -c "import sys; print sys.version.split()[0]"
++      ${PYTHON_EXECUTABLE} -c "import sys; print(sys.version.split()[0])"
+       OUTPUT_VARIABLE PythonInterp_VERSION
+       OUTPUT_STRIP_TRAILING_WHITESPACE
+       )
+--- packages/PyTrilinos/CMakeLists.txt	2015-11-12 18:40:12.000000000 -0600
++++ packages/PyTrilinos/CMakeLists2.txt	2015-11-17 21:17:17.000000000 -0600
+@@ -231,7 +231,7 @@
+ # Determine the PyTrilinos default installation directory prefix.  If
+ # CMAKE_INSTALL_PREFIX is set by the user, then use it.  Else the
+ # prefix is set to the value of python's sys.prefix.
+-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print sys.prefix"
++EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print(sys.prefix)"
+   OUTPUT_VARIABLE PYTHON_PREFIX
+   OUTPUT_STRIP_TRAILING_WHITESPACE
+   )
+--- packages/PyTrilinos/cmake/FindPythonInclude.cmake	2015-11-12 18:35:23.000000000 -0600
++++ packages/PyTrilinos/CMakeLists2.txt	2015-11-17 21:28:28.000000000 -0600
+@@ -53,7 +53,7 @@
+   # Obtain the candidate path for python include
+   EXECUTE_PROCESS(COMMAND
+     ${PYTHON_EXECUTABLE} -c 
+-    "import sys; print sys.prefix + '/include/python' + sys.version[:3]"
++    "import sys; print(sys.prefix + '/include/python' + sys.version[:3])"
+     OUTPUT_VARIABLE CANDIDATE
+     OUTPUT_STRIP_TRAILING_WHITESPACE
+     )
+@@ -67,13 +67,13 @@
+   # Obtain the candidate path for python library
+   EXECUTE_PROCESS(COMMAND
+     ${PYTHON_EXECUTABLE} -c 
+-    "import sys; print 'python' + sys.version[:3]"
++    "import sys; print('python' + sys.version[:3])"
+     OUTPUT_VARIABLE PYVERSION
+     OUTPUT_STRIP_TRAILING_WHITESPACE
+     )
+   EXECUTE_PROCESS(COMMAND
+     ${PYTHON_EXECUTABLE} -c 
+-    "import sys; print sys.prefix + '/lib/python' + sys.version[:3] + '/config'"
++    "import sys; print(sys.prefix + '/lib/python' + sys.version[:3] + '/config')"
+     OUTPUT_VARIABLE CANDIDATE
+     OUTPUT_STRIP_TRAILING_WHITESPACE
+     )
+--- /Users/john/miniconda3/conda-bld/work/trilinos-12.2.2-Source/packages/PyTrilinos/src/CMakeLists.txt	2015-11-12 18:40:12.000000000 -0600
++++ /Users/john/miniconda3/conda-bld/work/trilinos-12.2.2-Source/packages/PyTrilinos/src/CMakeLists2.txt	2015-11-17 21:36:28.000000000 -0600
+@@ -274,7 +274,7 @@
+ 
+ #
+ # Determine the install directory
+-EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print sys.version[:3]"
++EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; print(sys.version[:3])"
+   OUTPUT_VARIABLE PYTHON_VERSION
+   OUTPUT_STRIP_TRAILING_WHITESPACE
+ )
